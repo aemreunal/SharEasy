@@ -1,0 +1,15 @@
+﻿<Application
+    x:Class="SharEasy.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:SharEasy"
+    xmlns:localData="using:SharEasy.Common">
+
+    <Application.Resources>
+
+        <!-- Application-specific resources -->
+
+        <x:String x:Key="AppName">SharEasy</x:String>
+
+    </Application.Resources>
+</Application>

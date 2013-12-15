@@ -62,7 +62,7 @@
         </Grid>
 
         <!-- Friends list grid -->
-        <Grid Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <Grid Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0, 30, 0, 0">
             <GridView
                 x:Name="itemGridView"
                 TabIndex="1"

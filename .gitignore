@@ -157,4 +157,5 @@ $RECYCLE.BIN/
 
 /packages/*
 /SharEasy/Common/Constants.cs
+Constants.cs
 /SharEasy/Package.StoreAssociation.xml

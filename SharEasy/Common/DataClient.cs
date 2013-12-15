@@ -35,7 +35,6 @@ namespace SharEasy.ViewModels {
         private LiveAuthClient LiveAuthClient;
         private LiveConnectClient LiveConnectClient;
         private LiveConnectSession LiveSession;
-        private dynamic LiveUserName;
 
         private string AccessToken = String.Empty;
         private string FacebookId = String.Empty;
@@ -63,7 +62,7 @@ namespace SharEasy.ViewModels {
                 } catch (HttpRequestException) {
                     MessageDialog dialog = new MessageDialog("No network connection - unable to connect to Facebook.");
                     dialog.Commands.Add(new UICommand("Ok", new UICommandInvokedHandler((cmd) => App.Current.Exit())));
-                    showDialog(dialog);
+                    dialog.ShowAsync();
                 }
             }
         }
@@ -87,7 +86,7 @@ namespace SharEasy.ViewModels {
                 } catch (InvalidOperationException) {
                     MessageDialog dialog = new MessageDialog("Error when logging out!");
                     dialog.Commands.Add(new UICommand("Ok"));
-                    showDialog(dialog);
+                    dialog.ShowAsync();
                 }
             }
         }
@@ -127,7 +126,7 @@ namespace SharEasy.ViewModels {
             } catch (InvalidOperationException e) {
                 MessageDialog dialog = new MessageDialog("Login failed! Exception details: " + e.Message);
                 dialog.Commands.Add(new UICommand("Ok"));
-                showDialog(dialog);
+                dialog.ShowAsync();
             }
         }
 
@@ -152,7 +151,7 @@ namespace SharEasy.ViewModels {
             } catch (InvalidOperationException e) {
                 MessageDialog dialog = new MessageDialog("Login failed! Exception details: " + e.Message);
                 dialog.Commands.Add(new UICommand("Ok"));
-                showDialog(dialog);
+                dialog.ShowAsync();
             }
         }
 
@@ -177,7 +176,7 @@ namespace SharEasy.ViewModels {
                 } catch (InvalidOperationException) {
                     var dialog = new MessageDialog("Error when logging in to Azure Mobile Services!");
                     dialog.Commands.Add(new UICommand("Ok"));
-                    showDialog(dialog);
+                    dialog.ShowAsync();
                 }
             }
         }
@@ -232,10 +231,6 @@ namespace SharEasy.ViewModels {
             return false;
         }
 
-        private async void showDialog(MessageDialog dialog) {
-            await dialog.ShowAsync();
-        }
-
         public async Task RefreshItems() {
             if (friendsListLoaded) {
                 Debug.WriteLine("Attemting to refresh items.");
@@ -275,11 +270,11 @@ namespace SharEasy.ViewModels {
                 RefreshItems();
                 var dialog = new MessageDialog("Successfully shared item: \"" + fileInfoDict["name"] + "\".");
                 dialog.Commands.Add(new UICommand("Ok"));
-                showDialog(dialog);
+                dialog.ShowAsync();
             } catch (MobileServiceInvalidOperationException) {
                 var dialog = new MessageDialog("Error when sharing item!");
                 dialog.Commands.Add(new UICommand("Ok"));
-                showDialog(dialog);
+                dialog.ShowAsync();
             }
         }
 
@@ -304,7 +299,7 @@ namespace SharEasy.ViewModels {
                 } else {
                     var dialog = new MessageDialog("Cancelled sharing.");
                     dialog.Commands.Add(new UICommand("Ok"));
-                    showDialog(dialog);
+                    dialog.ShowAsync();
                 }
             } catch (System.Threading.Tasks.TaskCanceledException) {
                 Debug.WriteLine("Upload cancelled.");
@@ -358,10 +353,6 @@ namespace SharEasy.ViewModels {
                 foreach (SharedItem item in itemsByFriends[facebookUserID].OrderBy(x => x.date.Ticks).Reverse()) {
                     items.Add(new SharedItemsListElement(ProcessDate(item.date.ToLocalTime()), item.description, item.name, item.url));
                 }
-            } else {
-                var dialog = new MessageDialog("Items are not yet loaded, please try again in a few seconds.");
-                dialog.Commands.Add(new UICommand("Ok"));
-                showDialog(dialog);
             }
             return items;
         }

@@ -171,23 +171,25 @@ namespace SharEasy.Views {
         }
 
         private void showFriendsButton_Click(object sender, RoutedEventArgs e) {
-            if (showingAllFriends) {
-                if (App.DataClient.ShowSharingFriends()) {
-                    showingAllFriends = false;
-                    showFriendsButton.Content = "Show: All friends";
+            if (App.DataClient.friendsListIsLoaded()) {
+                if (showingAllFriends) {
+                    if (App.DataClient.ShowSharingFriends()) {
+                        showingAllFriends = false;
+                        showFriendsButton.Content = "Show: All friends";
+                    } else {
+                        MessageDialog dialog = new MessageDialog("Shared items are not yet loaded, please try again in a few seconds.");
+                        dialog.Commands.Add(new UICommand("Ok"));
+                        showDialog(dialog);
+                    }
                 } else {
-                    MessageDialog dialog = new MessageDialog("Shared items are not yet loaded, please try again in a few seconds.");
-                    dialog.Commands.Add(new UICommand("Ok"));
-                    showDialog(dialog);
-                }
-            } else {
-                if (App.DataClient.ShowAllFriends()) {
-                    showingAllFriends = true;
-                    showFriendsButton.Content = "Show: Friends who've shared";
-                } else {
-                    MessageDialog dialog = new MessageDialog("List of friends isn't yet loaded, please try again in a few seconds.");
-                    dialog.Commands.Add(new UICommand("Ok"));
-                    showDialog(dialog);
+                    if (App.DataClient.ShowAllFriends()) {
+                        showingAllFriends = true;
+                        showFriendsButton.Content = "Show: Friends who've shared";
+                    } else {
+                        MessageDialog dialog = new MessageDialog("List of friends isn't yet loaded, please try again in a few seconds.");
+                        dialog.Commands.Add(new UICommand("Ok"));
+                        showDialog(dialog);
+                    }
                 }
             }
         }
@@ -201,20 +203,20 @@ namespace SharEasy.Views {
 
         // User detail event
         private void mySharedItemsButton_Click(object sender, RoutedEventArgs e) {
-            if (App.DataClient.friendsListIsLoaded()) {
-                ShowUserDetailsPopup(App.DataClient.GetMyFacebookUserID());
-            }
+            ShowUserDetailsPopup(App.DataClient.GetMyFacebookUserID());
         }
 
         private void ShowUserDetailsPopup(string facebookUserID) {
-            UserItemsPopupNameTextBlock.Text = App.DataClient.GetNameOfUser(facebookUserID);
-            UserItemsPopupProfilePicture.Source = App.DataClient.GetProfilePicOfUser(facebookUserID);
-            this.DefaultViewModel["UserItems"] = App.DataClient.GetItemsOfUser(facebookUserID);
-            if (App.DataClient.GetItemsOfUser(facebookUserID).Count == 0) {
-                NoSharedItemsTextBlock.Visibility = Windows.UI.Xaml.Visibility.Visible;
+            if (App.DataClient.friendsListIsLoaded() && App.DataClient.itemsAreLoaded()) {
+                UserItemsPopupNameTextBlock.Text = App.DataClient.GetNameOfUser(facebookUserID);
+                UserItemsPopupProfilePicture.Source = App.DataClient.GetProfilePicOfUser(facebookUserID);
+                this.DefaultViewModel["UserItems"] = App.DataClient.GetItemsOfUser(facebookUserID);
+                if (App.DataClient.GetItemsOfUser(facebookUserID).Count == 0) {
+                    NoSharedItemsTextBlock.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                }
+                ShadowRectangle.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                UserItemsPopup.IsOpen = true;
             }
-            ShadowRectangle.Visibility = Windows.UI.Xaml.Visibility.Visible;
-            UserItemsPopup.IsOpen = true;
         }
 
         private void HideUserDetailsPopup() {

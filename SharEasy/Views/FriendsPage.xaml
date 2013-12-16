@@ -20,7 +20,7 @@
         Source="{Binding UserItems, Mode=OneWay}" />
         <CollectionViewSource
         x:Name="uploadingItemsSource"
-        Source="{Binding PendingUploads, Mode=OneWay}" />
+        Source="{Binding PendingUploads}" />
     </Page.Resources>
 
     <!--

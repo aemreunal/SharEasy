@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -33,7 +34,8 @@ namespace SharEasy.Common {
 
         public void SetProgressValue(double progress) {
             this.Progress = progress;
-            OnPropertyChanged("Value");
+            Debug.WriteLine("File: " + Name + " Progress: " + progress);
+            OnPropertyChanged("Progress");
         }
 
         public Upload(StorageFile file) {

@@ -303,11 +303,11 @@ namespace SharEasy.ViewModels {
         }
 
         private async Task<Dictionary<string, string>> UploadFile(StorageFile file) {
+            Upload Upload = new Upload(file);
             try {
                 if (file != null) {
                     Dictionary<string, string> fileInfoDict = new Dictionary<string, string>();
 
-                    Upload Upload = new Upload(file);
                     //this.progressBar.Value = 0;
                     Upload.ProgressHandler = new Progress<LiveOperationProgress>((progress) => Upload.SetProgressValue(progress.ProgressPercentage));
                     //var progressHandler = new Progress<LiveOperationProgress>((progress) => { this.progressBar.Value = progress.ProgressPercentage; });
@@ -328,10 +328,12 @@ namespace SharEasy.ViewModels {
                     return fileInfoDict;
                 }
             } catch (TaskCanceledException) {
+                PendingUploads.Remove(Upload);
                 var dialog = new MessageDialog("Upload of file " + file.Name + " has been cancelled.");
                 dialog.Commands.Add(new UICommand("Ok"));
                 dialog.ShowAsync();
             } catch (LiveConnectException exception) {
+                PendingUploads.Remove(Upload);
                 var dialog = new MessageDialog("Error uploading file: " + exception.Message);
                 dialog.Commands.Add(new UICommand("Ok"));
                 dialog.ShowAsync();
@@ -347,7 +349,7 @@ namespace SharEasy.ViewModels {
             return PendingUploads.Count != 0;
         }
 
-        public async void CancelUpload(Upload upload) {
+        public async Task CancelUpload(Upload upload) {
             if (upload.CancellationToken != null) {
                 upload.CancellationToken.Cancel();
             }

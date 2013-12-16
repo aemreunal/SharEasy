@@ -106,16 +106,14 @@ namespace SharEasy.Views {
         }
 
         private async void shareButton_Click(object sender, RoutedEventArgs e) {
-            if (!App.DataClient.UserChoseAFile()) {
-                await App.DataClient.PickFile();
-                if (App.DataClient.UserChoseAFile()) {
-                    FileNameTextBox.Text = App.DataClient.GetChosenFileName();
-                    showSharingPopup();
-                } else {
-                    var dialog = new MessageDialog("Cancelled sharing.");
-                    dialog.Commands.Add(new UICommand("Ok"));
-                    dialog.ShowAsync();
-                }
+            await App.DataClient.PickFile();
+            if (App.DataClient.UserChoseAFile()) {
+                FileNameTextBox.Text = App.DataClient.GetChosenFileName();
+                showSharingPopup();
+            } else {
+                var dialog = new MessageDialog("Cancelled sharing.");
+                dialog.Commands.Add(new UICommand("Ok"));
+                dialog.ShowAsync();
             }
         }
 
@@ -301,7 +299,7 @@ namespace SharEasy.Views {
                 Grid grid = sender as Grid;
                 Upload upload = grid.DataContext as Upload;
                 MessageDialog dialog = new MessageDialog("Would you like to cancel this upload?");
-                dialog.Commands.Add(new UICommand("Yes, cancel upload", new UICommandInvokedHandler((cmd) => App.DataClient.CancelUpload(upload))));
+                dialog.Commands.Add(new UICommand("Yes, cancel upload", new UICommandInvokedHandler(async (cmd) => await App.DataClient.CancelUpload(upload))));
                 dialog.Commands.Add(new UICommand("No, continue uploading"));
                 await dialog.ShowAsync();
             } catch (Exception) {

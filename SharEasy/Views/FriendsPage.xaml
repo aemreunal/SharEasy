@@ -39,7 +39,7 @@
             <RowDefinition />
         </Grid.RowDefinitions>
 
-        <!-- Back button and page title -->
+        <!-- Back button, page title, sharing buttons -->
         <Grid Grid.ColumnSpan="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="120" />
@@ -55,7 +55,7 @@
                         IsHitTestVisible="false" TextWrapping="NoWrap" VerticalAlignment="Bottom" Margin="20,0,30,40" Grid.ColumnSpan="3" />
             <StackPanel Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <Button x:Name="showFriendsButton" Content="Show: Friends who've shared" HorizontalAlignment="Center" Margin="5, 5, 5, 5" Height="40" Click="showFriendsButton_Click" Width="230" />
-                <Button x:Name="mySharedItemsButton" Content="My shared items" HorizontalAlignment="Center" Margin="5, 5, 5, 5" Height="40" Width="230" Click="mySharedItemsButton_Click" />
+                <Button x:Name="mySharedItemsButton" Content="My items" HorizontalAlignment="Center" Margin="5, 5, 5, 5" Height="40" Width="230" Click="mySharedItemsButton_Click" />
             </StackPanel>
 
             <StackPanel Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center">

@@ -221,7 +221,7 @@ namespace SharEasy.Views {
             PendingUploadsPopup.IsOpen = true;
         }
 
-        private void HidePendingUploadsPopup() {
+        public void HidePendingUploadsPopup() {
             PendingUploadsPopup.IsOpen = false;
             ShadowRectangle.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
         }

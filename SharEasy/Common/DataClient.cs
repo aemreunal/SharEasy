@@ -323,17 +323,20 @@ namespace SharEasy.ViewModels {
                     string fileLink = await GetLinkOfFile(fileID);
                     fileInfoDict.Add("link", fileLink);
 
+                    friendsPage.HidePendingUploadsPopup();
                     PendingUploads.Remove(Upload);
 
                     return fileInfoDict;
                 }
             } catch (TaskCanceledException) {
                 PendingUploads.Remove(Upload);
+                friendsPage.HidePendingUploadsPopup();
                 var dialog = new MessageDialog("Upload of file " + file.Name + " has been cancelled.");
                 dialog.Commands.Add(new UICommand("Ok"));
                 dialog.ShowAsync();
             } catch (LiveConnectException exception) {
                 PendingUploads.Remove(Upload);
+                friendsPage.HidePendingUploadsPopup();
                 var dialog = new MessageDialog("Error uploading file: " + exception.Message);
                 dialog.Commands.Add(new UICommand("Ok"));
                 dialog.ShowAsync();

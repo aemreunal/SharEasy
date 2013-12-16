@@ -34,7 +34,6 @@ namespace SharEasy.Common {
 
         public void SetProgressValue(double progress) {
             this.Progress = progress;
-            Debug.WriteLine("File: " + Name + " Progress: " + progress);
             OnPropertyChanged("Progress");
         }
 

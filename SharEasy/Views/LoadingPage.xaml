@@ -9,6 +9,7 @@
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
+        <TextBlock x:Name="LoadingTextBlock" Text="Starting SharEasy..." HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,200,0,0" FontSize="72" />
         <ProgressRing x:Name="LoadingRing" Height="150" Margin="0" Width="150" IsActive="True" Foreground="White"/>
 
     </Grid>

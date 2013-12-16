@@ -31,7 +31,6 @@ using Windows.UI.Xaml.Navigation;
 
 namespace SharEasy {
     sealed partial class App : Application {
-        public static String cleanNavigationState;
         public static DataClient DataClient;
         /// <summary>
         /// Provides application-specific behavior to supplement the default Application class.
@@ -93,7 +92,6 @@ namespace SharEasy {
                 // configuring the new page by passing required information as a navigation
                 // parameter
                 //rootFrame.Navigate(typeof(GroupedItemsPage), e.Arguments);
-                cleanNavigationState = rootFrame.GetNavigationState();
                 rootFrame.Navigate(typeof(LoadingPage));
             }
             // Ensure the current window is active

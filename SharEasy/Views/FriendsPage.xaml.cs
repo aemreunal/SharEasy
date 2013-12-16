@@ -104,9 +104,18 @@ namespace SharEasy.Views {
             this.pageTitle.Text = "SharEasy - " + App.DataClient.GetUsername();
         }
 
-        private void shareButton_Click(object sender, RoutedEventArgs e) {
-            //App.DataClient.
-            showSharingPopup();
+        private async void shareButton_Click(object sender, RoutedEventArgs e) {
+            if (!App.DataClient.UserChoseAFile()) {
+                await App.DataClient.PickFile();
+                if (App.DataClient.UserChoseAFile()) {
+                    FileNameTextBox.Text = App.DataClient.GetChosenFileName();
+                    showSharingPopup();
+                } else {
+                    var dialog = new MessageDialog("Cancelled sharing.");
+                    dialog.Commands.Add(new UICommand("Ok"));
+                    dialog.ShowAsync();
+                }
+            }
         }
 
         private void refreshButton_Click(object sender, RoutedEventArgs e) {
@@ -132,19 +141,15 @@ namespace SharEasy.Views {
             ShadowRectangle.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
         }
 
-        private async void Share(String description) {
-            await App.DataClient.ShareItem(description);
-        }
-
         private void PopupShareButton_Click(object sender, RoutedEventArgs e) {
             if (!String.IsNullOrWhiteSpace(DescriptionTextBox.Text)) {
-                if (DescriptionTextBox.Text.Length <= 140) {
-                    Share(DescriptionTextBox.Text);
-                    DescriptionTextBox.Text = String.Empty;
+                if (DescriptionTextBox.Text.Length <= 200) {
+                    App.DataClient.ShareItem(DescriptionTextBox.Text);
                     hideSharingPopup();
+                    DescriptionTextBox.Text = String.Empty;
                     App.DataClient.RefreshItems();
                 } else {
-                    MessageDialog dialog = new MessageDialog("Description must be less than 140 characters.");
+                    MessageDialog dialog = new MessageDialog("Description must be less than 200 characters.");
                     dialog.Commands.Add(new UICommand("Ok"));
                     showDialog(dialog);
                 }

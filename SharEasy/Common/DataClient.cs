@@ -19,6 +19,7 @@ using Windows.ApplicationModel;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.UI.Popups;
+using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Imaging;
 
 namespace SharEasy.ViewModels {
@@ -53,12 +54,16 @@ namespace SharEasy.ViewModels {
         private BitmapImage userProfilePicture;
         private String username;
 
-        public async Task Login() {
+        public async Task Login(TextBlock LoadingTextBlock) {
             if (!fbLoggedIn) {
                 try {
+                    LoadingTextBlock.Text = "Connecting to Facebook";
                     await AuthenticateFacebook();
+                    LoadingTextBlock.Text = "Connecting to SkyDrive";
                     await AuthenticateSkyDrive();
+                    LoadingTextBlock.Text = "Connecting to Azure";
                     await AuthenticateMobileService();
+                    LoadingTextBlock.Text = "Welcome";
                 } catch (HttpRequestException) {
                     MessageDialog dialog = new MessageDialog("No network connection - unable to connect to Facebook.");
                     dialog.Commands.Add(new UICommand("Ok", new UICommandInvokedHandler((cmd) => App.Current.Exit())));
@@ -264,7 +269,9 @@ namespace SharEasy.ViewModels {
 
         public async Task ShareItem(string description) {
             try {
-                Dictionary<string, string> fileInfoDict = await UploadFile();
+                StorageFile file = currentSelectedFile;
+                currentSelectedFile = null;
+                Dictionary<string, string> fileInfoDict = await UploadFile(file);
                 SharedItem itemToShare = new SharedItem { facebookUserID = FacebookId, description = description, url = fileInfoDict["link"], name = fileInfoDict["name"], date = System.DateTime.UtcNow };
                 await sharedItemsTable.InsertAsync(itemToShare);
                 RefreshItems();
@@ -278,22 +285,16 @@ namespace SharEasy.ViewModels {
             }
         }
 
-        //public async Task PickFileToShare() {
-        //    StorageFile file = await PickFile();
-        //}
-
-        //private StorageFile currentSelectedFile;
+        private StorageFile currentSelectedFile;
 
         //private CancellationTokenSource ctsUpload;
 
-        private async Task<Dictionary<string, string>> UploadFile() {
+        private async Task<Dictionary<string, string>> UploadFile(StorageFile file) {
             Dictionary<string, string> fileInfoDict = new Dictionary<string, string>();
             try {
-                StorageFile file = await PickFile();
                 if (file != null) {
                     //this.progressBar.Value = 0;
-                    //var progressHandler = new Progress<LiveOperationProgress>(
-                    //    (progress) => { this.progressBar.Value = progress.ProgressPercentage; });
+                    //var progressHandler = new Progress<LiveOperationProgress>((progress) => { this.progressBar.Value = progress.ProgressPercentage; });
                     //this.ctsUpload = new System.Threading.CancellationTokenSource();
                     await LiveConnectClient.BackgroundUploadAsync("me/skydrive", file.Name, file, OverwriteOption.Rename);
                     fileInfoDict.Add("name", file.Name);
@@ -302,26 +303,37 @@ namespace SharEasy.ViewModels {
                     string fileLink = await GetLinkOfFile(fileID);
                     fileInfoDict.Add("link", fileLink);
                     return fileInfoDict;
-                } else {
-                    var dialog = new MessageDialog("Cancelled sharing.");
-                    dialog.Commands.Add(new UICommand("Ok"));
-                    dialog.ShowAsync();
                 }
             } catch (System.Threading.Tasks.TaskCanceledException) {
-                Debug.WriteLine("Upload cancelled.");
+                var dialog = new MessageDialog("Upload of file " + file.Name + " has been cancelled.");
+                dialog.Commands.Add(new UICommand("Ok"));
+                dialog.ShowAsync();
             } catch (LiveConnectException exception) {
-                Debug.WriteLine("Error uploading file: " + exception.Message);
+                var dialog = new MessageDialog("Error uploading file: " + exception.Message);
+                dialog.Commands.Add(new UICommand("Ok"));
+                dialog.ShowAsync();
             }
             return null;
         }
 
-        private static async Task<StorageFile> PickFile() {
+        public async Task PickFile() {
+            currentSelectedFile = null;
             FileOpenPicker picker = new FileOpenPicker();
             picker.ViewMode = PickerViewMode.List;
             picker.SuggestedStartLocation = PickerLocationId.Desktop;
             picker.FileTypeFilter.Add("*");
-            StorageFile file = await picker.PickSingleFileAsync();
-            return file;
+            currentSelectedFile = await picker.PickSingleFileAsync();
+        }
+
+        public bool UserChoseAFile() {
+            return currentSelectedFile != null;
+        }
+
+        public string GetChosenFileName() {
+            if (currentSelectedFile != null) {
+                return currentSelectedFile.Name;
+            }
+            return String.Empty;
         }
 
         private async Task<string> GetSkyDriveFileID(string fileName) {

@@ -67,8 +67,9 @@ namespace SharEasy.Views {
 
         private async void FetchData() {
             App.DataClient = new DataClient();
-            await App.DataClient.Login();
+            await App.DataClient.Login(LoadingTextBlock);
             LoadingRing.IsActive = false;
+            LoadingTextBlock.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
             this.Frame.Navigate(typeof(FriendsPage));
         }
 

@@ -10,11 +10,17 @@
 
         public string Name { get; set; }
 
-        public SharedItemsListElement(string date, string description, string name, string url) {
+        public string UserID { get; set; }
+
+        public SharedItem SharedItem { get; set; }
+
+        public SharedItemsListElement(string date, string description, string name, string url, string userID, SharedItem sharedItem) {
             this.Date = date;
             this.Description = description;
             this.Name = name;
             this.URL = url;
+            this.UserID = userID;
+            this.SharedItem = sharedItem;
         }
     }
 }

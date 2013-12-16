@@ -156,14 +156,14 @@
                                         <RowDefinition />
                                         <RowDefinition Height="20" />
                                     </Grid.RowDefinitions>
-                                    <TextBlock x:Name="DateTextBlock" Grid.Row="0" Text="{Binding Date}" FontStyle="Italic" Margin="5,0,0,0" Foreground="#FF939393"/>
-                                    <!--
-                                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Hidden" VerticalScrollMode="Auto"  Margin="5,5,5,5" HorizontalScrollMode="Auto" Background="#FF171717">
-                                        <TextBlock x:Name="DescriptionTextBlock" Text="{Binding Description}" TextWrapping="WrapWholeWords" FontSize="16" />
-                                    </ScrollViewer>
-                                    -->
-                                    <TextBlock x:Name="DescriptionTextBlock" Grid.Row="1" Text="{Binding Description}" TextWrapping="WrapWholeWords"  Margin="5,5,5,5" FontSize="18" />
-                                    <TextBlock x:Name="URLTextBlock" Grid.Row="2" Text="{Binding Name}" FontWeight="Bold" Margin="5,0,0,0" Foreground="#FF939393" />
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition Width="50"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock x:Name="DateTextBlock" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" Text="{Binding Date}" FontStyle="Italic" Margin="5,0,0,0" Foreground="#FF939393"/>
+                                    <TextBlock x:Name="DescriptionTextBlock"  Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="1" Text="{Binding Description}" TextWrapping="WrapWholeWords"  Margin="5,5,5,5" FontSize="18" />
+                                    <!--<Button x:Name="CloseButton" Grid.Column="1" Grid.ColumnSpan="1" Grid.Row="1" Content="X" FontSize="16" Visibility="Visible"/>-->
+                                    <TextBlock x:Name="URLTextBlock"  Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" Text="{Binding Name}" FontWeight="Bold" Margin="5,0,0,0" Foreground="#FF939393" />
                                 </Grid>
                             </Border>
                         </DataTemplate>

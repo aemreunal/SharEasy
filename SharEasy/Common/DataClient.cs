@@ -160,14 +160,6 @@ namespace SharEasy.ViewModels {
             }
         }
 
-        //private async void LoadProfile() {
-        //    LiveConnectClient client = new LiveConnectClient(App.LiveSession);
-        //    LiveOperationResult liveOpResult = await client.GetAsync("me");
-        //    dynamic dynResult = liveOpResult.Result;
-        //    App.LiveUserName = dynResult.name;
-        //    //LoadData();
-        //}
-
         private async Task AuthenticateMobileService() {
             MobileServiceAuthenticationProvider provider = MobileServiceAuthenticationProvider.Facebook;
             while (MobileServiceUser == null) {
@@ -285,6 +277,20 @@ namespace SharEasy.ViewModels {
             }
         }
 
+        public async Task DeleteItem(SharedItem itemToDelete) {
+            try {
+                await sharedItemsTable.DeleteAsync(itemToDelete);
+                var dialog = new MessageDialog("Successfully deleted " + itemToDelete.name + ".");
+                dialog.Commands.Add(new UICommand("Ok"));
+                dialog.ShowAsync();
+                RefreshItems();
+            } catch (MobileServiceInvalidOperationException) {
+                var dialog = new MessageDialog("Error when deleting item!");
+                dialog.Commands.Add(new UICommand("Ok"));
+                dialog.ShowAsync();
+            }
+        }
+
         private StorageFile currentSelectedFile;
 
         //private CancellationTokenSource ctsUpload;
@@ -369,7 +375,7 @@ namespace SharEasy.ViewModels {
             List<SharedItemsListElement> items = new List<SharedItemsListElement>();
             if (itemsLoaded && friendsListLoaded) {
                 foreach (SharedItem item in itemsByFriends[facebookUserID].OrderBy(x => x.date.Ticks).Reverse()) {
-                    items.Add(new SharedItemsListElement(ProcessDate(item.date.ToLocalTime()), item.description, item.name, item.url));
+                    items.Add(new SharedItemsListElement(ProcessDate(item.date.ToLocalTime()), item.description, item.name, item.url, item.facebookUserID, item));
                 }
             }
             return items;

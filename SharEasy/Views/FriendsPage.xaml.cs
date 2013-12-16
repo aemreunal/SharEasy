@@ -1,6 +1,7 @@
 ﻿using SharEasy.Common;
 using SharEasy.ViewModels;
 using System;
+using System.Diagnostics;
 using Windows.System;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
@@ -151,17 +152,13 @@ namespace SharEasy.Views {
                 } else {
                     MessageDialog dialog = new MessageDialog("Description must be less than 200 characters.");
                     dialog.Commands.Add(new UICommand("Ok"));
-                    showDialog(dialog);
+                    dialog.ShowAsync();
                 }
             } else {
                 MessageDialog dialog = new MessageDialog("You must write a description to your shared item.");
                 dialog.Commands.Add(new UICommand("Ok"));
-                showDialog(dialog);
+                dialog.ShowAsync();
             }
-        }
-
-        private async void showDialog(MessageDialog dialog) {
-            dialog.ShowAsync();
         }
 
         private void PopupCancelButton_Click(object sender, RoutedEventArgs e) {
@@ -185,7 +182,7 @@ namespace SharEasy.Views {
                     } else {
                         MessageDialog dialog = new MessageDialog("Shared items are not yet loaded, please try again in a few seconds.");
                         dialog.Commands.Add(new UICommand("Ok"));
-                        showDialog(dialog);
+                        dialog.ShowAsync();
                     }
                 } else {
                     if (App.DataClient.ShowAllFriends()) {
@@ -194,7 +191,7 @@ namespace SharEasy.Views {
                     } else {
                         MessageDialog dialog = new MessageDialog("List of friends isn't yet loaded, please try again in a few seconds.");
                         dialog.Commands.Add(new UICommand("Ok"));
-                        showDialog(dialog);
+                        dialog.ShowAsync();
                     }
                 }
             }
@@ -235,17 +232,38 @@ namespace SharEasy.Views {
             HideUserDetailsPopup();
         }
 
-        private void SharedItem_Tapped(object sender, TappedRoutedEventArgs e) {
+        private async void SharedItem_Tapped(object sender, TappedRoutedEventArgs e) {
             try {
                 Grid grid = sender as Grid;
                 SharedItemsListElement item = grid.DataContext as SharedItemsListElement;
-                Uri uri = new Uri(ProcessURL(item.URL));
-                Launcher.LaunchUriAsync(uri);
+                if (item.UserID == App.DataClient.GetMyFacebookUserID()) {
+                    MessageDialog dialog = new MessageDialog("Would you like to view your item, or delete it?");
+                    dialog.Commands.Add(new UICommand("View", new UICommandInvokedHandler((cmd) => LaunchURL(item.URL))));
+                    dialog.Commands.Add(new UICommand("Delete", new UICommandInvokedHandler((cmd) => DeleteAndClosePopup(item))));
+                    dialog.Commands.Add(new UICommand("Cancel"));
+                    await dialog.ShowAsync();
+                } else {
+                    MessageDialog dialog = new MessageDialog("Would you like to view this item?");
+                    dialog.Commands.Add(new UICommand("View", new UICommandInvokedHandler((cmd) => LaunchURL(item.URL))));
+                    dialog.Commands.Add(new UICommand("Cancel"));
+                    await dialog.ShowAsync();
+                }
+
             } catch (Exception) {
-                MessageDialog dialog = new MessageDialog("Error occurred when jumping to shared item URL!");
+                MessageDialog dialog = new MessageDialog("Error occurred when getting shared item!");
                 dialog.Commands.Add(new UICommand("Ok"));
-                showDialog(dialog);
+                dialog.ShowAsync();
             }
+        }
+
+        private async void DeleteAndClosePopup(SharedItemsListElement item) {
+            App.DataClient.DeleteItem(item.SharedItem);
+            HideUserDetailsPopup();
+        }
+
+        private void LaunchURL(string urlToLaunch) {
+            Uri uri = new Uri(ProcessURL(urlToLaunch));
+            Launcher.LaunchUriAsync(uri);
         }
 
         private string ProcessURL(string url) {

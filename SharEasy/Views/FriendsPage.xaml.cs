@@ -105,6 +105,7 @@ namespace SharEasy.Views {
         }
 
         private void shareButton_Click(object sender, RoutedEventArgs e) {
+            //App.DataClient.
             showSharingPopup();
         }
 

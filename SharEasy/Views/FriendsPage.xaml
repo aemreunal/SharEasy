@@ -110,7 +110,8 @@
                     <RowDefinition Height="75*" />
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0" Text="Share" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="72" Margin="20,15,0,0" />
-                <TextBox x:Name="DescriptionTextBox" Grid.Row="1" PlaceholderText="Description" AcceptsReturn="True" Background="Black" Margin="20,0,20,3" FontSize="16" Foreground="White" />
+                <TextBox x:Name="DescriptionTextBox" Grid.Row="1" PlaceholderText="Description" Background="Black" Margin="20,0" FontSize="16" Foreground="White" VerticalAlignment="Top" Height="107" />
+                <TextBlock x:Name="FileNameTextBox" Grid.Row="1" Text="File name: deneme.jpg" HorizontalAlignment="Left" VerticalAlignment="Bottom" FontSize="14" Margin="20,5,0,5" />
                 <Button x:Name="PopupShareButton" Grid.Row="2" Content="Share" HorizontalAlignment="Left" Width="150" Margin="50,0,0,0" Click="PopupShareButton_Click" />
                 <Button x:Name="PopupCancelButton" Grid.Row="2" Content="Cancel" HorizontalAlignment="Right" Width="150" Margin="0,0,50,0" Click="PopupCancelButton_Click" />
             </Grid>

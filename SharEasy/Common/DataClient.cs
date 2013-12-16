@@ -278,6 +278,12 @@ namespace SharEasy.ViewModels {
             }
         }
 
+        //public async Task PickFileToShare() {
+        //    StorageFile file = await PickFile();
+        //}
+
+        //private StorageFile currentSelectedFile;
+
         //private CancellationTokenSource ctsUpload;
 
         private async Task<Dictionary<string, string>> UploadFile() {

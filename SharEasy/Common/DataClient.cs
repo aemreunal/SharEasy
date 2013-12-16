@@ -308,15 +308,15 @@ namespace SharEasy.ViewModels {
                 if (file != null) {
                     Dictionary<string, string> fileInfoDict = new Dictionary<string, string>();
 
-                    //this.progressBar.Value = 0;
                     Upload.ProgressHandler = new Progress<LiveOperationProgress>((progress) => Upload.SetProgressValue(progress.ProgressPercentage));
-                    //var progressHandler = new Progress<LiveOperationProgress>((progress) => { this.progressBar.Value = progress.ProgressPercentage; });
                     Upload.CancellationToken = new System.Threading.CancellationTokenSource();
-                    //this.ctsUpload = new System.Threading.CancellationTokenSource();
 
                     PendingUploads.Add(Upload);
 
                     await LiveConnectClient.BackgroundUploadAsync("me/skydrive", Upload.File.Name, Upload.File, OverwriteOption.Rename, Upload.CancellationToken.Token, Upload.ProgressHandler);
+
+                    Upload.SetProgressValue(1);
+
                     fileInfoDict.Add("name", Upload.File.Name);
                     string fileID = await GetSkyDriveFileID(Upload.File.Name);
                     Debug.WriteLine("Upload completed, file name: " + Upload.File.Name + " file ID: " + fileID);

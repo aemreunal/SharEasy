@@ -205,8 +205,27 @@ namespace SharEasy.Views {
         }
 
         // User detail event
-        private void mySharedItemsButton_Click(object sender, RoutedEventArgs e) {
-            ShowUserDetailsPopup(App.DataClient.GetMyFacebookUserID());
+        private async void mySharedItemsButton_Click(object sender, RoutedEventArgs e) {
+            if (App.DataClient.UploadingFiles()) {
+                MessageDialog dialog = new MessageDialog("Would you like to view your shared items or pending uploads?");
+                dialog.Commands.Add(new UICommand("Shared Items", new UICommandInvokedHandler((cmd) => ShowUserDetailsPopup(App.DataClient.GetMyFacebookUserID()))));
+                dialog.Commands.Add(new UICommand("Pending Uploads", new UICommandInvokedHandler((cmd) => ShowPendingUploadsPopup())));
+                dialog.Commands.Add(new UICommand("Cancel"));
+                await dialog.ShowAsync();
+            } else {
+                ShowUserDetailsPopup(App.DataClient.GetMyFacebookUserID());
+            }
+        }
+
+        private void ShowPendingUploadsPopup() {
+            this.DefaultViewModel["PendingUploads"] = App.DataClient.GetPendingUploads();
+            ShadowRectangle.Visibility = Windows.UI.Xaml.Visibility.Visible;
+            PendingUploadsPopup.IsOpen = true;
+        }
+
+        private void HidePendingUploadsPopup() {
+            PendingUploadsPopup.IsOpen = false;
+            ShadowRectangle.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
         }
 
         private void ShowUserDetailsPopup(string facebookUserID) {
@@ -237,7 +256,7 @@ namespace SharEasy.Views {
                 Grid grid = sender as Grid;
                 SharedItemsListElement item = grid.DataContext as SharedItemsListElement;
                 if (item.UserID == App.DataClient.GetMyFacebookUserID()) {
-                    MessageDialog dialog = new MessageDialog("Would you like to view your item, or delete it?");
+                    MessageDialog dialog = new MessageDialog("Would you like to view your item or delete it?");
                     dialog.Commands.Add(new UICommand("View", new UICommandInvokedHandler((cmd) => LaunchURL(item.URL))));
                     dialog.Commands.Add(new UICommand("Delete", new UICommandInvokedHandler((cmd) => DeleteAndClosePopup(item))));
                     dialog.Commands.Add(new UICommand("Cancel"));
@@ -271,6 +290,25 @@ namespace SharEasy.Views {
                 return "http://" + url;
             }
             return url;
+        }
+
+        private void UploadsPopupCloseButton_Tapped(object sender, TappedRoutedEventArgs e) {
+            HidePendingUploadsPopup();
+        }
+
+        private async void PendingUploadsGrid_Tapped(object sender, TappedRoutedEventArgs e) {
+            try {
+                Grid grid = sender as Grid;
+                Upload upload = grid.DataContext as Upload;
+                MessageDialog dialog = new MessageDialog("Would you like to cancel this upload?");
+                dialog.Commands.Add(new UICommand("Yes, cancel upload", new UICommandInvokedHandler((cmd) => App.DataClient.CancelUpload(upload))));
+                dialog.Commands.Add(new UICommand("No, continue uploading"));
+                await dialog.ShowAsync();
+            } catch (Exception) {
+                MessageDialog dialog = new MessageDialog("Error occurred when accessing upload!");
+                dialog.Commands.Add(new UICommand("Ok"));
+                dialog.ShowAsync();
+            }
         }
     }
 }

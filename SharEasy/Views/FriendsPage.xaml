@@ -18,6 +18,9 @@
         <CollectionViewSource
         x:Name="userItemsSource"
         Source="{Binding UserItems, Mode=OneWay}" />
+        <CollectionViewSource
+        x:Name="uploadingItemsSource"
+        Source="{Binding PendingUploads, Mode=OneWay}" />
     </Page.Resources>
 
     <!--
@@ -172,6 +175,51 @@
 
                 <!-- Close Button -->
                 <Button x:Name="PopupCloseButton" Grid.Row="2" Content="Close" HorizontalAlignment="Right" Width="150" Margin="0,0,20,0" Click="UserItemsPopupCloseButton_Click" />
+            </Grid>
+        </Popup>
+
+        <!-- Uploads popup -->
+        <Popup x:Name="PendingUploadsPopup" Width="700" Grid.RowSpan="2" Grid.ColumnSpan="4" IsOpen="False" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center" MinHeight="350" Height="700">
+            <Popup.Transitions>
+                <TransitionCollection>
+                    <PopupThemeTransition />
+                </TransitionCollection>
+            </Popup.Transitions>
+            <Grid Width="700" MinHeight="350" MaxHeight="700" HorizontalAlignment="Center" VerticalAlignment="Center" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+                <Grid.Transitions>
+                    <TransitionCollection>
+                        <PopupThemeTransition />
+                    </TransitionCollection>
+                </Grid.Transitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="97" />
+                    <RowDefinition />
+                    <RowDefinition Height="72" />
+                </Grid.RowDefinitions>
+
+                <!-- Title -->
+                <TextBlock Text="Ongoing Uploads" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="48" Margin="20,20,0,0" />
+
+                <!-- Uploads -->
+                <ListView x:Name="PendingUploadsGridView" ItemsSource="{Binding Source={StaticResource uploadingItemsSource}}" Grid.Row="1" SelectionMode="None" IsSwipeEnabled="false" Margin="20, 0, 20, 0" HorizontalAlignment="Center">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Border BorderBrush="{ThemeResource ListViewItemPlaceholderBackgroundThemeBrush}" BorderThickness="2">
+                                <Grid HorizontalAlignment="Left" Width="600" Height="Auto" Tapped="PendingUploadsGrid_Tapped">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="50" />
+                                        <RowDefinition Height="50" />
+                                    </Grid.RowDefinitions>
+                                    <TextBlock x:Name="UploadingItemNameTextBlock"  Grid.Row="0" Text="{Binding Name}" TextWrapping="NoWrap"  Margin="5,5,5,5" FontSize="18" />
+                                    <ProgressBar Grid.Row="1" Margin="5" Value="{Binding Progress, UpdateSourceTrigger=PropertyChanged}" SmallChange="0.01"/>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+
+                <!-- Close Button -->
+                <Button x:Name="UploadsPopupCloseButton" Grid.Row="2" Content="Close" HorizontalAlignment="Right" Width="150" Margin="0,0,20,0" Tapped="UploadsPopupCloseButton_Tapped" />
             </Grid>
         </Popup>
     </Grid>

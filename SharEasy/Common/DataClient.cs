@@ -50,6 +50,9 @@ namespace SharEasy.ViewModels {
         private IMobileServiceTable<SharedItem> sharedItemsTable;
         private Dictionary<string, List<SharedItem>> itemsByFriends = new Dictionary<string, List<SharedItem>>();
         private Dictionary<string, bool> friendShareStatus = new Dictionary<string, bool>();
+        private List<Upload> PendingUploads = new List<Upload>();
+
+        private StorageFile currentSelectedFile;
 
         private BitmapImage userProfilePicture;
         private String username;
@@ -138,19 +141,25 @@ namespace SharEasy.ViewModels {
         private async Task AuthenticateSkyDrive() {
             try {
                 if (!sdLoggedIn) {
-                    LiveAuthClient = new LiveAuthClient();
-                    LiveLoginResult authResult = await LiveAuthClient.LoginAsync(new List<string>() { "wl.signin", "wl.skydrive", "wl.skydrive_update", "wl.offline_access", "wl.contacts_skydrive" });
-                    if (authResult.Status == LiveConnectSessionStatus.Connected) {
-                        LiveSession = authResult.Session;
-                        LiveConnectClient = new LiveConnectClient(LiveSession);
-                        // Test
-                        //LiveOperationResult liveOpResult = await LiveConnectClient.GetAsync("me");
-                        //dynamic dynResult = liveOpResult.Result;
-                        //if (dynResult != null) {
-                        //    Debug.WriteLine("Hello, " + string.Join(" ", "Hello,", dynResult.name, "!"));
-                        //}
-                        // Test
-                        Debug.WriteLine("Connected to Live.");
+                    try {
+                        LiveAuthClient = new LiveAuthClient();
+                        LiveLoginResult authResult = await LiveAuthClient.LoginAsync(new List<string>() { "wl.signin", "wl.skydrive", "wl.skydrive_update", "wl.offline_access", "wl.contacts_skydrive" });
+                        if (authResult.Status == LiveConnectSessionStatus.Connected) {
+                            LiveSession = authResult.Session;
+                            LiveConnectClient = new LiveConnectClient(LiveSession);
+                            // Test
+                            //LiveOperationResult liveOpResult = await LiveConnectClient.GetAsync("me");
+                            //dynamic dynResult = liveOpResult.Result;
+                            //if (dynResult != null) {
+                            //    Debug.WriteLine("Hello, " + string.Join(" ", "Hello,", dynResult.name, "!"));
+                            //}
+                            // Test
+                            Debug.WriteLine("Connected to Live.");
+                        }
+                    } catch (NullReferenceException) {
+                        MessageDialog dialog = new MessageDialog("Login failed! Network connection unavailable.");
+                        dialog.Commands.Add(new UICommand("Ok", new UICommandInvokedHandler((cmd) => App.Current.Exit())));
+                        dialog.ShowAsync();
                     }
                 }
             } catch (InvalidOperationException e) {
@@ -264,12 +273,14 @@ namespace SharEasy.ViewModels {
                 StorageFile file = currentSelectedFile;
                 currentSelectedFile = null;
                 Dictionary<string, string> fileInfoDict = await UploadFile(file);
-                SharedItem itemToShare = new SharedItem { facebookUserID = FacebookId, description = description, url = fileInfoDict["link"], name = fileInfoDict["name"], date = System.DateTime.UtcNow };
-                await sharedItemsTable.InsertAsync(itemToShare);
+                if (fileInfoDict != null) {
+                    SharedItem itemToShare = new SharedItem { facebookUserID = FacebookId, description = description, url = fileInfoDict["link"], name = fileInfoDict["name"], date = System.DateTime.UtcNow };
+                    await sharedItemsTable.InsertAsync(itemToShare);
+                    var dialog = new MessageDialog("Successfully shared item: \"" + fileInfoDict["name"] + "\".");
+                    dialog.Commands.Add(new UICommand("Ok"));
+                    dialog.ShowAsync();
+                }
                 RefreshItems();
-                var dialog = new MessageDialog("Successfully shared item: \"" + fileInfoDict["name"] + "\".");
-                dialog.Commands.Add(new UICommand("Ok"));
-                dialog.ShowAsync();
             } catch (MobileServiceInvalidOperationException) {
                 var dialog = new MessageDialog("Error when sharing item!");
                 dialog.Commands.Add(new UICommand("Ok"));
@@ -291,26 +302,32 @@ namespace SharEasy.ViewModels {
             }
         }
 
-        private StorageFile currentSelectedFile;
-
-        //private CancellationTokenSource ctsUpload;
-
         private async Task<Dictionary<string, string>> UploadFile(StorageFile file) {
-            Dictionary<string, string> fileInfoDict = new Dictionary<string, string>();
             try {
                 if (file != null) {
+                    Dictionary<string, string> fileInfoDict = new Dictionary<string, string>();
+
+                    Upload Upload = new Upload(file);
                     //this.progressBar.Value = 0;
+                    Upload.ProgressHandler = new Progress<LiveOperationProgress>((progress) => Upload.SetProgressValue(progress.ProgressPercentage));
                     //var progressHandler = new Progress<LiveOperationProgress>((progress) => { this.progressBar.Value = progress.ProgressPercentage; });
+                    Upload.CancellationToken = new System.Threading.CancellationTokenSource();
                     //this.ctsUpload = new System.Threading.CancellationTokenSource();
-                    await LiveConnectClient.BackgroundUploadAsync("me/skydrive", file.Name, file, OverwriteOption.Rename);
-                    fileInfoDict.Add("name", file.Name);
-                    string fileID = await GetSkyDriveFileID(file.Name);
-                    Debug.WriteLine("Upload completed, file name: " + file.Name + " file ID: " + fileID);
+
+                    PendingUploads.Add(Upload);
+
+                    await LiveConnectClient.BackgroundUploadAsync("me/skydrive", Upload.File.Name, Upload.File, OverwriteOption.Rename, Upload.CancellationToken.Token, Upload.ProgressHandler);
+                    fileInfoDict.Add("name", Upload.File.Name);
+                    string fileID = await GetSkyDriveFileID(Upload.File.Name);
+                    Debug.WriteLine("Upload completed, file name: " + Upload.File.Name + " file ID: " + fileID);
                     string fileLink = await GetLinkOfFile(fileID);
                     fileInfoDict.Add("link", fileLink);
+
+                    PendingUploads.Remove(Upload);
+
                     return fileInfoDict;
                 }
-            } catch (System.Threading.Tasks.TaskCanceledException) {
+            } catch (TaskCanceledException) {
                 var dialog = new MessageDialog("Upload of file " + file.Name + " has been cancelled.");
                 dialog.Commands.Add(new UICommand("Ok"));
                 dialog.ShowAsync();
@@ -320,6 +337,20 @@ namespace SharEasy.ViewModels {
                 dialog.ShowAsync();
             }
             return null;
+        }
+
+        public List<Upload> GetPendingUploads() {
+            return PendingUploads;
+        }
+
+        public bool UploadingFiles() {
+            return PendingUploads.Count != 0;
+        }
+
+        public async void CancelUpload(Upload upload) {
+            if (upload.CancellationToken != null) {
+                upload.CancellationToken.Cancel();
+            }
         }
 
         public async Task PickFile() {
@@ -364,12 +395,6 @@ namespace SharEasy.ViewModels {
             }
             return "";
         }
-
-        //private void btnCancelUpload_Click(object sender, RoutedEventArgs e) {
-        //    if (this.ctsUpload != null) {
-        //        this.ctsUpload.Cancel();
-        //    }
-        //}
 
         public List<SharedItemsListElement> GetItemsOfUser(String facebookUserID) {
             List<SharedItemsListElement> items = new List<SharedItemsListElement>();

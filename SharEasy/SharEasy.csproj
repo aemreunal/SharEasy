@@ -111,6 +111,7 @@
     <Compile Include="Common\Friend.cs" />
     <Compile Include="Common\SharedItem.cs" />
     <Compile Include="Common\SharedItemsListElement.cs" />
+    <Compile Include="Common\Upload.cs" />
     <Compile Include="Views\FriendsPage.xaml.cs">
       <DependentUpon>FriendsPage.xaml</DependentUpon>
     </Compile>

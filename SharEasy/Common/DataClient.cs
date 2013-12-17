@@ -52,6 +52,8 @@ namespace SharEasy.ViewModels {
         private Dictionary<string, bool> friendShareStatus = new Dictionary<string, bool>();
         private List<Upload> PendingUploads = new List<Upload>();
 
+        private string SkyDriveFolderToUpload = "me/skydrive/public_documents";
+
         private StorageFile currentSelectedFile;
 
         private BitmapImage userProfilePicture;
@@ -313,7 +315,7 @@ namespace SharEasy.ViewModels {
 
                     PendingUploads.Add(Upload);
 
-                    await LiveConnectClient.BackgroundUploadAsync("me/skydrive/public_documents", Upload.File.Name, Upload.File, OverwriteOption.Rename, Upload.CancellationToken.Token, Upload.ProgressHandler);
+                    await LiveConnectClient.BackgroundUploadAsync(SkyDriveFolderToUpload, Upload.File.Name, Upload.File, OverwriteOption.Rename, Upload.CancellationToken.Token, Upload.ProgressHandler);
 
                     Upload.SetProgressValue(100);
 
@@ -379,7 +381,7 @@ namespace SharEasy.ViewModels {
         }
 
         private async Task<string> GetSkyDriveFileID(string fileName) {
-            LiveOperationResult operationResult = await LiveConnectClient.GetAsync("me/skydrive/public_documents/files");
+            LiveOperationResult operationResult = await LiveConnectClient.GetAsync(SkyDriveFolderToUpload + "/files");
             var iEnum = operationResult.Result.Values.GetEnumerator();
             iEnum.MoveNext();
             var files = iEnum.Current as IEnumerable;

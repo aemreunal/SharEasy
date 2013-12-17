@@ -315,7 +315,7 @@ namespace SharEasy.ViewModels {
 
                     await LiveConnectClient.BackgroundUploadAsync("me/skydrive/public_documents", Upload.File.Name, Upload.File, OverwriteOption.Rename, Upload.CancellationToken.Token, Upload.ProgressHandler);
 
-                    Upload.SetProgressValue(1);
+                    Upload.SetProgressValue(100);
 
                     fileInfoDict.Add("name", Upload.File.Name);
                     string fileID = await GetSkyDriveFileID(Upload.File.Name);

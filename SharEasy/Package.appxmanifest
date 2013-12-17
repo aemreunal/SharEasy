@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest" xmlns:m2="http://schemas.microsoft.com/appx/2013/manifest">
-  <Identity Name="54698A.Emrenal.SharEasy" Publisher="CN=8D8853AA-0100-41DB-8270-C48F45F0CAD0" Version="1.1.0.0" />
+  <Identity Name="54698A.Emrenal.SharEasy" Publisher="CN=8D8853AA-0100-41DB-8270-C48F45F0CAD0" Version="1.1.0.2" />
   <Properties>
     <DisplayName>SharEasy</DisplayName>
     <PublisherDisplayName>A. Emre Ünal</PublisherDisplayName>
@@ -16,7 +16,14 @@
   <Applications>
     <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="SharEasy.App">
       <m2:VisualElements DisplayName="SharEasy" Square150x150Logo="Assets\Logo.png" Square30x30Logo="Assets\SmallLogo.png" Description="SharEasy" ForegroundText="light" BackgroundColor="#464646">
+        <m2:DefaultTile ShortName="SharEasy">
+        </m2:DefaultTile>
         <m2:SplashScreen Image="Assets\SplashScreen.png" />
+        <m2:InitialRotationPreference>
+          <m2:Rotation Preference="landscape" />
+          <m2:Rotation Preference="landscapeFlipped" />
+        </m2:InitialRotationPreference>
+        <m2:ApplicationView MinWidth="width500" />
       </m2:VisualElements>
     </Application>
   </Applications>

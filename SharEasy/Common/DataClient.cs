@@ -313,7 +313,7 @@ namespace SharEasy.ViewModels {
 
                     PendingUploads.Add(Upload);
 
-                    await LiveConnectClient.BackgroundUploadAsync("me/skydrive", Upload.File.Name, Upload.File, OverwriteOption.Rename, Upload.CancellationToken.Token, Upload.ProgressHandler);
+                    await LiveConnectClient.BackgroundUploadAsync("me/skydrive/public_documents", Upload.File.Name, Upload.File, OverwriteOption.Rename, Upload.CancellationToken.Token, Upload.ProgressHandler);
 
                     Upload.SetProgressValue(1);
 
@@ -379,7 +379,7 @@ namespace SharEasy.ViewModels {
         }
 
         private async Task<string> GetSkyDriveFileID(string fileName) {
-            LiveOperationResult operationResult = await LiveConnectClient.GetAsync("me/skydrive/files");
+            LiveOperationResult operationResult = await LiveConnectClient.GetAsync("me/skydrive/public_documents/files");
             var iEnum = operationResult.Result.Values.GetEnumerator();
             iEnum.MoveNext();
             var files = iEnum.Current as IEnumerable;

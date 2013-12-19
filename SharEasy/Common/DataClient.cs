@@ -82,7 +82,20 @@ namespace SharEasy.ViewModels {
             await FetchUserInfo();
             await FetchFriends();
             await RefreshItems();
-            ShowSharingFriends();
+            if(SomeoneSharedSomething()) {
+                ShowSharingFriends();
+            } else {
+                ShowAllFriends();
+            }
+        }
+
+        private bool SomeoneSharedSomething() {
+            foreach (bool shared in friendShareStatus.Values) {
+                if (shared) {
+                    return true;
+                }
+            }
+            return false;
         }
 
         public void Logout() {
@@ -227,6 +240,8 @@ namespace SharEasy.ViewModels {
 
         public bool ShowAllFriends() {
             if (friendsListLoaded) {
+                friendsPage.SetShowAllFriends(true);
+                friendsPage.SetFriendsButtonText("Show: Friends who've shared");
                 friendsPage.DefaultViewModel["Friends"] = friends.OrderBy(x => x.Name);
                 return true;
             }
@@ -236,6 +251,8 @@ namespace SharEasy.ViewModels {
         public bool ShowSharingFriends() {
             if (friendsListLoaded && itemsLoaded) {
                 friendsPage.DefaultViewModel["Friends"] = friends.Where(x => friendShareStatus[x.facebookUserID]);
+                friendsPage.SetShowAllFriends(false);
+                friendsPage.SetFriendsButtonText("Show: All friends");
                 return true;
             }
             return false;

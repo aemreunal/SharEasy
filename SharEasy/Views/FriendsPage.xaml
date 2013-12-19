@@ -54,7 +54,7 @@
             <TextBlock x:Name="pageTitle" Text="{StaticResource AppName}" Style="{StaticResource HeaderTextBlockStyle}" Grid.Column="2"
                         IsHitTestVisible="false" TextWrapping="NoWrap" VerticalAlignment="Bottom" Margin="20,0,30,40" Grid.ColumnSpan="3" />
             <StackPanel Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Button x:Name="showFriendsButton" Content="Show: All friends" HorizontalAlignment="Center" Margin="5, 5, 5, 5" Height="40" Click="showFriendsButton_Click" Width="230" />
+                <Button x:Name="showFriendsButton" Content="" HorizontalAlignment="Center" Margin="5, 5, 5, 5" Height="40" Click="showFriendsButton_Click" Width="230" />
                 <Button x:Name="mySharedItemsButton" Content="My items" HorizontalAlignment="Center" Margin="5, 5, 5, 5" Height="40" Width="230" Click="mySharedItemsButton_Click" />
             </StackPanel>
 

@@ -174,25 +174,27 @@ namespace SharEasy.Views {
         private void showFriendsButton_Click(object sender, RoutedEventArgs e) {
             if (App.DataClient.friendsListIsLoaded()) {
                 if (showingAllFriends) {
-                    if (App.DataClient.ShowSharingFriends()) {
-                        showingAllFriends = false;
-                        showFriendsButton.Content = "Show: All friends";
-                    } else {
+                    if (!App.DataClient.ShowSharingFriends()) {
                         MessageDialog dialog = new MessageDialog("Shared items are not yet loaded, please try again in a few seconds.");
                         dialog.Commands.Add(new UICommand("Ok"));
                         dialog.ShowAsync();
                     }
                 } else {
-                    if (App.DataClient.ShowAllFriends()) {
-                        showingAllFriends = true;
-                        showFriendsButton.Content = "Show: Friends who've shared";
-                    } else {
+                    if (!App.DataClient.ShowAllFriends()) {
                         MessageDialog dialog = new MessageDialog("List of friends isn't yet loaded, please try again in a few seconds.");
                         dialog.Commands.Add(new UICommand("Ok"));
                         dialog.ShowAsync();
                     }
                 }
             }
+        }
+
+        public void SetShowAllFriends(bool value) {
+            showingAllFriends = value;
+        }
+
+        public void SetFriendsButtonText(string value) {
+            showFriendsButton.Content = value;
         }
 
         // User detail event

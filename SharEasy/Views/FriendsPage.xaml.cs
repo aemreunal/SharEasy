@@ -21,7 +21,7 @@ namespace SharEasy.Views {
         private NavigationHelper navigationHelper;
         private ObservableDictionary defaultViewModel = new ObservableDictionary();
         private bool firstLaunch = true;
-        private bool showingAllFriends = true;
+        private bool showingAllFriends = false;
 
         /// <summary>
         /// This can be changed to a strongly typed view model.

@@ -82,6 +82,7 @@ namespace SharEasy.ViewModels {
             await FetchUserInfo();
             await FetchFriends();
             await RefreshItems();
+            ShowSharingFriends();
         }
 
         public void Logout() {
@@ -220,7 +221,6 @@ namespace SharEasy.ViewModels {
                 });
             }
             friendsListLoaded = true;
-            ShowAllFriends();
         }
 
         public bool ShowAllFriends() {

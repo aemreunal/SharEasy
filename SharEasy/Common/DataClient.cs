@@ -98,6 +98,8 @@ namespace SharEasy.ViewModels {
                     MessageDialog dialog = new MessageDialog("Error when logging out!");
                     dialog.Commands.Add(new UICommand("Ok"));
                     dialog.ShowAsync();
+                } catch (NullReferenceException) {
+                    /* Ignore it */
                 }
             }
         }
@@ -129,7 +131,7 @@ namespace SharEasy.ViewModels {
         private async Task AuthenticateFacebook() {
             try {
                 FacebookSessionClient = new FacebookSessionClient(Constants.FacebookAppId);
-                FacebookSession = await FacebookSessionClient.LoginAsync("user_about_me,user_friends");
+                FacebookSession = await FacebookSessionClient.LoginAsync("user_friends");
                 AccessToken = FacebookSession.AccessToken;
                 FacebookId = FacebookSession.FacebookId;
                 fbLoggedIn = true;

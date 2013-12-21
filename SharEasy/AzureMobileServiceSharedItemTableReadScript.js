@@ -61,15 +61,13 @@ function createResponse() {
         success: function (results) {
             console.log("Got table.");
             var items = [];
-
             results.forEach(function (r) {
                 if (friends.indexOf(r.facebookUserID) > -1) {
                     items[items.length] = r;
                 }
             });
-            results = items;
             console.log("Got all items.");
-            requestObj.respond();
+            requestObj.respond(200, items);
         }
     });
 }

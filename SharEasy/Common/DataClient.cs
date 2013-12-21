@@ -254,10 +254,34 @@ namespace SharEasy.ViewModels {
                 Debug.WriteLine("Attemting to refresh items.");
                 itemsByFriends.Clear();
                 friendShareStatus.Clear();
+                List<SharedItem> allItems;
                 List<SharedItem> itemsByFriend;
-
                 sharedItemsTable = MobileServiceClient.GetTable<SharedItem>();
-                List<SharedItem> allItems = await sharedItemsTable.ToListAsync();
+
+                //await sharedItemsTable.InsertAsync(new SharedItem { facebookUserID = "1234", name = "Deneme", date = DateTime.Now, description = "deneme", url = "www.deneme.com" });
+
+                allItems = await sharedItemsTable.ToListAsync();
+
+                foreach (SharedItem item in allItems) {
+                    Debug.WriteLine("UID: " + item.facebookUserID);
+                }
+
+                //IMobileServiceTableQuery<SharedItem> query = sharedItemsTable.Where(x => x.facebookUserID == FacebookId);
+
+                //foreach (Friend friend in friends) {
+                //    query = query.Where(x => x.facebookUserID == friend.facebookUserID);
+                //}
+
+                //List<SharedItem> allItems = await query.ToListAsync();
+
+                //string[] fbIDs = new string[friends.Count + 1];
+                //fbIDs[0] = FacebookId;
+
+                //for (int i = 0; i < friends.Count; i++) {
+                //    fbIDs[i + 1] = friends[i].facebookUserID;
+                //}
+
+                //allItems = await sharedItemsTable.Where(x => fbIDs.Contains<string>(x.facebookUserID)).ToListAsync();
 
                 // My items
                 itemsByFriend = allItems.Where<SharedItem>(x => x.facebookUserID.Equals(FacebookId)).ToList<SharedItem>();

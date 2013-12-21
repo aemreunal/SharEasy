@@ -3,6 +3,7 @@ using SharEasy.ViewModels;
 using System;
 using System.Diagnostics;
 using Windows.System;
+using Windows.UI.ApplicationSettings;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -41,6 +42,7 @@ namespace SharEasy.Views {
             this.InitializeComponent();
             this.navigationHelper = new NavigationHelper(this);
             this.navigationHelper.LoadState += navigationHelper_LoadState;
+            SettingsPane.GetForCurrentView().CommandsRequested += SettingsCommandsRequested;
         }
 
         #region NavigationHelper registration
@@ -308,6 +310,14 @@ namespace SharEasy.Views {
                 dialog.Commands.Add(new UICommand("Ok"));
                 dialog.ShowAsync();
             }
+        }
+
+        private void SettingsCommandsRequested(SettingsPane sender, SettingsPaneCommandsRequestedEventArgs args) {
+            var privacyStatement = new SettingsCommand("privacy", "Privacy Statement", x => Launcher.LaunchUriAsync(
+                    new Uri("http://www.google.com")));
+
+            args.Request.ApplicationCommands.Clear();
+            args.Request.ApplicationCommands.Add(privacyStatement);
         }
     }
 }

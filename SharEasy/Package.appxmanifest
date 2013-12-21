@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest" xmlns:m2="http://schemas.microsoft.com/appx/2013/manifest">
-  <Identity Name="54698A.Emrenal.SharEasy" Publisher="CN=8D8853AA-0100-41DB-8270-C48F45F0CAD0" Version="1.1.0.4" />
+  <Identity Name="54698A.Emrenal.SharEasy" Publisher="CN=8D8853AA-0100-41DB-8270-C48F45F0CAD0" Version="1.1.0.0" />
   <Properties>
     <DisplayName>SharEasy</DisplayName>
     <PublisherDisplayName>A. Emre Ünal</PublisherDisplayName>

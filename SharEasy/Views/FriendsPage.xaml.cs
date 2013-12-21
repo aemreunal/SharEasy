@@ -20,7 +20,6 @@ namespace SharEasy.Views {
     public sealed partial class FriendsPage : Page {
         private NavigationHelper navigationHelper;
         private ObservableDictionary defaultViewModel = new ObservableDictionary();
-        private bool firstLaunch = true;
         private bool showingAllFriends = false;
 
         /// <summary>
@@ -275,7 +274,7 @@ namespace SharEasy.Views {
             }
         }
 
-        private async void DeleteAndClosePopup(SharedItemsListElement item) {
+        private void DeleteAndClosePopup(SharedItemsListElement item) {
             App.DataClient.DeleteItem(item.SharedItem);
             HideUserDetailsPopup();
         }

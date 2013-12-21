@@ -111,6 +111,7 @@
     <Compile Include="Common\Constants.cs" />
     <Compile Include="Common\DataClient.cs" />
     <Compile Include="Common\Friend.cs" />
+    <Compile Include="Common\FriendLink.cs" />
     <Compile Include="Common\SharedItem.cs" />
     <Compile Include="Common\SharedItemsListElement.cs" />
     <Compile Include="Common\Upload.cs" />
@@ -162,6 +163,7 @@
     <Content Include="Assets\WideLogo.scale-140.png" />
     <Content Include="Assets\WideLogo.scale-180.png" />
     <Content Include="Assets\WideLogo.scale-80.png" />
+    <Content Include="AzureMobileServiceSharedItemTableReadScript.js" />
     <Content Include="Fonts\LiveSymbol.ttf" />
     <None Include="packages.config" />
     <None Include="SharEasy_StoreKey.pfx" />
@@ -211,6 +213,9 @@
     <Reference Include="System.Net.Http.Primitives">
       <HintPath>..\packages\Microsoft.Net.Http.2.2.18\lib\win8\System.Net.Http.Primitives.dll</HintPath>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '12.0' ">
     <VisualStudioVersion>12.0</VisualStudioVersion>

@@ -24,7 +24,6 @@ namespace SharEasy.Views {
     /// </summary>
     public sealed partial class LoadingPage : Page {
         private NavigationHelper navigationHelper;
-        private DataClient dataClient;
 
         /// <summary>
         /// NavigationHelper is used on each page to aid in navigation and 

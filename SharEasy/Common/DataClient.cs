@@ -105,7 +105,7 @@ namespace SharEasy.ViewModels {
                     clearMSData();
                     FacebookSessionClient.Logout();
                     clearFBData();
-                    LiveAuthClient.Logout();
+                    //LiveAuthClient.Logout();
                     clearLiveData();
                 } catch (InvalidOperationException) {
                     MessageDialog dialog = new MessageDialog("Error when logging out!");
@@ -165,13 +165,6 @@ namespace SharEasy.ViewModels {
                         if (authResult.Status == LiveConnectSessionStatus.Connected) {
                             LiveSession = authResult.Session;
                             LiveConnectClient = new LiveConnectClient(LiveSession);
-                            // Test
-                            //LiveOperationResult liveOpResult = await LiveConnectClient.GetAsync("me");
-                            //dynamic dynResult = liveOpResult.Result;
-                            //if (dynResult != null) {
-                            //    Debug.WriteLine("Hello, " + string.Join(" ", "Hello,", dynResult.name, "!"));
-                            //}
-                            // Test
                             Debug.WriteLine("Connected to Live.");
                         }
                     } catch (NullReferenceException) {
@@ -193,12 +186,10 @@ namespace SharEasy.ViewModels {
                 try {
                     MobileServiceClient = new MobileServiceClient(Constants.MobileServiceAppURL, Constants.MobileServiceAppKey);
                     MobileServiceUser = await MobileServiceClient.LoginAsync(provider, JObject.Parse("{\"access_token\":\"" + AccessToken + "\"}"));
-                    //message = string.Format("You are now logged in - {0}", user.UserId);
                     msLoggedIn = true;
-                    sharedItemsTable = MobileServiceClient.GetTable<SharedItem>();
-                    Debug.WriteLine("Azure Mobile Services login succeeded, user ID: " + MobileServiceUser.UserId);
-                } catch (InvalidOperationException) {
-                    var dialog = new MessageDialog("Error when logging in to Azure Mobile Services!");
+                    Debug.WriteLine("Azure Mobile Services login succeeded.");
+                } catch (InvalidOperationException e) {
+                    var dialog = new MessageDialog("Error when logging in to Azure Mobile Services: " + e.Message);
                     dialog.Commands.Add(new UICommand("Ok"));
                     dialog.ShowAsync();
                 }
@@ -264,6 +255,8 @@ namespace SharEasy.ViewModels {
                 itemsByFriends.Clear();
                 friendShareStatus.Clear();
                 List<SharedItem> itemsByFriend;
+
+                sharedItemsTable = MobileServiceClient.GetTable<SharedItem>();
                 List<SharedItem> allItems = await sharedItemsTable.ToListAsync();
 
                 // My items

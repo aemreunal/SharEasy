@@ -6,8 +6,9 @@
 	4) The date of the shared item, which is the date the item is shared.
 	5) The name of the shared item, which is the name of the file the user chose to upload.
 
-Apart from these items, NOTHING is stored in SharEasy's servers. No login information is kept, recoreded, or otherwise transferred outside of 
-the official Facebook Login or the Live Login, implemented to SharEasy.
+Apart from these items, NOTHING is stored in SharEasy's servers. Apart from the Facebook login info you may choose to save to the Windows OS' 
+Credential Manager, no login information is kept, recoreded, or otherwise transferred outside of the official Facebook Login or the Live Login 
+implemented to SharEasy. You may, at any time choose to remove the stored credentials using the Windows OS' Credential Manager.
 
 Everything you choose to share is uploaded to the Public folder of your SkyDrive, which means anyone can view it. Deleting a shared item from 
 SharEasy only means that you delete the REFERENCE to the item you uploaded, visible to other users of SharEasy. The actual file is NOT deleted

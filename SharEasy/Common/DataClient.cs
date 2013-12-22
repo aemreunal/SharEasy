@@ -19,6 +19,7 @@ using Windows.ApplicationModel;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.UI.Popups;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Imaging;
 
@@ -73,6 +74,9 @@ namespace SharEasy.ViewModels {
                     MessageDialog dialog = new MessageDialog("No network connection - unable to connect to Facebook.");
                     dialog.Commands.Add(new UICommand("Ok", new UICommandInvokedHandler((cmd) => App.Current.Exit())));
                     dialog.ShowAsync();
+                } catch (Exception) {
+                    Logout();
+                    //Application.Current.Exit();
                 }
             }
         }

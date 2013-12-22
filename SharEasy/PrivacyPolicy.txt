@@ -1,1 +1,20 @@
-﻿
+﻿SharEasy app, in it's servers, stores only the items you share, in which the following information is available:
+
+	1) Facebook User ID of the sharing person, which, under the Facebook terms, can be stored for non-financial uses, which includes this case.
+	2) The description of the shared item, which the user enters before sharing.
+	3) The URL of the shared item, which is the URL to the SkyDrive file the user chose to upload.
+	4) The date of the shared item, which is the date the item is shared.
+	5) The name of the shared item, which is the name of the file the user chose to upload.
+
+Apart from these items, NOTHING is stored in SharEasy's servers. No login information is kept, recoreded, or otherwise transferred outside of 
+the official Facebook Login or the Live Login, implemented to SharEasy.
+
+Everything you choose to share is uploaded to the Public folder of your SkyDrive, which means anyone can view it. Deleting a shared item from 
+SharEasy only means that you delete the REFERENCE to the item you uploaded, visible to other users of SharEasy. The actual file is NOT deleted
+and will still be accessible to anyone who has the link to it.
+
+Because SharEasy is a free, open-source software, it is provided to you without any assurances or promises as to how it would perform, or the 
+uptime of the app. You are free to view or use the source code of SharEasy, accessible from http://www.github.com/aemreunal/SharEasy, as 
+dictated by the GNU GENERAL PUBLIC LICENSE Version 2.
+
+By using SharEasy, you declare that you accept and acknowledge these terms.

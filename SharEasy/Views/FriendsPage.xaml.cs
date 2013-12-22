@@ -313,7 +313,7 @@ namespace SharEasy.Views {
         }
 
         private void SettingsCommandsRequested(SettingsPane sender, SettingsPaneCommandsRequestedEventArgs args) {
-            var privacyStatement = new SettingsCommand("privacy", "Privacy Statement", x => Launcher.LaunchUriAsync(
+            var privacyStatement = new SettingsCommand("privacy", "Privacy Policy", x => Launcher.LaunchUriAsync(
                     new Uri("http://www.google.com")));
 
             args.Request.ApplicationCommands.Clear();
